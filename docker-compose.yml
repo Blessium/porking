@@ -9,6 +9,9 @@ services:
 
   porking-database:
     image: "postgres:alpine"
+    container_name: "porking-db"
+    restart: always
     environment:
-      POSTGRES_PASSWORD: bruh 
+      POSTGRES_PASSWORD: blessium
+      POSTGRES_USER: blessium
 
