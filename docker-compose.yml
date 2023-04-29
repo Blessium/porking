@@ -1,0 +1,14 @@
+
+services:
+  porking:
+    build:
+      context: .
+    container_name: "porking"
+    ports:
+      - "1234:1234"
+
+  porking-database:
+    image: "postgres:alpine"
+    environment:
+      POSTGRES_PASSWORD: bruh 
+
