@@ -8,4 +8,6 @@ import (
 func registerRoutes(e *echo.Echo) {
     user := e.Group("users")
     user.POST("", handler.AddUser)
+    user.GET("", handler.GetUsers)
+    user.GET("/:id", handler.GetUser)
 }
