@@ -10,6 +10,8 @@ func registerRoutes(e *echo.Echo) {
 	user.POST("", handler.AddUser)
 	user.GET("", handler.GetUsers)
 	user.GET("/:id", handler.GetUser)
+    user.PUT("/:id", handler.UpdateUser)
+    user.POST("/auth", handler.AuthUser)
 
 	car_park := e.Group("car_parks")
 	car_park.POST("", handler.AddCarPark)
