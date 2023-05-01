@@ -8,7 +8,7 @@ import (
 type Reservation struct {
 	ID         uint `gorm:"primaryKey"`
 	CreatedAt  time.Time
-    StartTime  time.Time `gorm:"index:,composite:time,"`
+    StartTime  time.Time `gorm:"index:,composite:time"`
     EndTime    time.Time`gorm:"index:,composite:time"`
 	Cost       float32  
 	QRCodePath string

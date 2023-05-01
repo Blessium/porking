@@ -12,4 +12,5 @@ type CarPark struct {
 	TotalSpaces  int32   `json:"total_spaces"`
 	PricePerHour float32 `json:"price_per_hour"`
 	ParkingSpots []ParkingSpot
+    Reservations []Reservation
 }
