@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"errors"
 	"github.com/blessium/porking/database"
 	"github.com/blessium/porking/model"
 	"github.com/blessium/porking/utils"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -33,7 +31,7 @@ func GetUsers(c echo.Context) error {
 func GetUser(c echo.Context) error {
 	u := new(model.User)
 
-	id, err := extract_id_from_token(c)
+	id, err := utils.Extract_id_from_token(c)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -58,7 +56,7 @@ func GetUser(c echo.Context) error {
 func UpdateUser(c echo.Context) error {
 	u := new(model.User)
 
-	id, err := extract_id_from_token(c)
+	id, err := utils.Extract_id_from_token(c)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -141,14 +139,3 @@ func AuthUser(c echo.Context) error {
 	return c.String(http.StatusCreated, token)
 }
 
-func extract_id_from_token(c echo.Context) (uint, error) {
-	token, ok := c.Get("user").(*jwt.Token)
-	if !ok {
-		return 0, errors.New("Jwt token missing or invalid")
-	}
-	claims, ok := token.Claims.(jwt.MapClaims) // by default claims is of type `jwt.MapClaims`
-	if !ok {
-		return 0, errors.New("failed to cast claims as jwt.MapClaims")
-	}
-	return uint(claims["user_id"].(float64)), nil
-}

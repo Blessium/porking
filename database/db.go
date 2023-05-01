@@ -20,7 +20,7 @@ func ConnectDatabase() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&model.User{}, &model.CarPark{}, &model.ParkingSpot{}, &model.Reservation{})
+	db.AutoMigrate(&model.User{}, &model.CarPark{}, &model.ParkingSpot{}, &model.Reservation{}, &model.Car{})
 
 	sqlDB.SetMaxOpenConns(10)
 	sqlDB.SetMaxIdleConns(5)

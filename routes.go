@@ -24,4 +24,13 @@ func registerRoutes(e *echo.Echo) {
 	parking_spot := car_park.Group("/:id/parking_spots")
     parking_spot.GET("", handler.GetAllParkingSpots)
 	parking_spot.POST("", handler.AddParkingSpot)
+
+    cars := e.Group("cars", jwt_mid)
+    cars.GET("", handler.GetCars)
+    cars.POST("", handler.AddCar)
+    cars.PUT("/:id", handler.UpdateCar)
+
+    res := e.Group("reservations", jwt_mid)
+    res.GET("", handler.GetAllReservations)
+    res.POST("", handler.CreateReservation)
 }
