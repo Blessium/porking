@@ -2,15 +2,17 @@ package main
 
 import (
 	"github.com/blessium/porking/handler"
+    "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
 func registerRoutes(e *echo.Echo) {
+    jwt_mid := echojwt.WithConfig(echojwt.Config{SigningKey: []byte("abracadabra"),})
 	user := e.Group("users")
 	user.POST("", handler.AddUser)
 	user.GET("", handler.GetUsers)
-	user.GET("/:id", handler.GetUser)
-    user.PUT("/:id", handler.UpdateUser)
+	user.GET("/me", handler.GetUser, jwt_mid)
+    user.PUT("/me", handler.UpdateUser, jwt_mid)
     user.POST("/auth", handler.AuthUser)
 
 	car_park := e.Group("car_parks")

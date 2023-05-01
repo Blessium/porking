@@ -2,34 +2,34 @@ package model
 
 type User struct {
 	ID    uint   `gorm:"primaryKey"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Phone string `json:"phone"`
-    Password string `json:"password"`
+    Name  string `json:"name" validate:"required"`
+	Email string `json:"email" validate:"required"`
+    Phone string `json:"phone" validate:"required"`
+    Password string `json:"password" validate:"required"`
 }
 
 type UserInfo struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Phone string `json:"phone"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Phone string `json:"phone"`
 }
 
 type UserLogin struct {
-    Email string `json:"email"`
-    Password string `json:"password"`
+    Email string `json:"email" validate:"required"`
+    Password string `json:"password" validate:"required"`
 }
 
 func (u *UserInfo) UpdateUser(user *User) *User {
-    user.Name = u.Name
-    user.Email = u.Email
-    user.Phone = u.Phone
+    if (u.Name != "") { user.Name = u.Name }
+    if (u.Email != "") { user.Email = u.Email }
+    if (u.Phone != "") { user.Phone = u.Phone }
     return user
 } 
 
 func (u *User) CleanUser() UserInfo {
     var user UserInfo
-    user.Name = u.Name
-    user.Email = u.Email
-    user.Phone = u.Phone
+    if (u.Name != "") { user.Name = u.Name }
+    if (u.Email != "") { user.Email = u.Email }
+    if (u.Phone != "") { user.Phone = u.Phone }
     return user
 }
