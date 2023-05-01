@@ -6,4 +6,5 @@ type Car struct {
     Size string `json:"size"`
     Color string `json:"color"`
     LicensePlate string `json:"license_plate"`
+    UserID uint `gorm:"index:idx_user"`
 }
