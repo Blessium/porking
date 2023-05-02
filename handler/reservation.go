@@ -27,11 +27,16 @@ func CreateReservation(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+    qr_path, err := utils.GenerateQR(&r)
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
+
     re := r.ConvertToReservation()
 	re.UserID = user_id
-    fmt.Println("What the fuck")
+    re.QRCodePath = qr_path
 	db.Save(&re)
-	return c.String(http.StatusCreated, "Created")
+	return c.JSON(http.StatusCreated, re)
 }
 
 func GetAllReservations(c echo.Context) error {
