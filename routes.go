@@ -33,4 +33,6 @@ func registerRoutes(e *echo.Echo) {
     res := e.Group("reservations", jwt_mid)
     res.GET("", handler.GetAllReservations)
     res.POST("", handler.CreateReservation)
+
+    e.GET("qr/:uuid", handler.GetQRCode)
 }
