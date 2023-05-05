@@ -14,6 +14,7 @@ func main() {
     if err != nil {
         log.Fatal("Error loading credentials.env") 
     }
+    InitDi()
     utils.InitValidator()
 	registerRoutes(e)
 	e.Logger.Fatal(e.Start(":1234"))
