@@ -48,11 +48,10 @@ func CreateReservation(c echo.Context) error {
     re := r.ConvertToReservation()
 	re.UserID = user_id
     re.QRCodePath = "http://localhost:1234/qr/" + qr_path
-	db.Save(&re)
 
-    if err := utils.SendEmail(user.Email,&user, &re, qr_path); err != nil {
-        return c.String(http.StatusInternalServerError, err.Error());
-    }
+	db.Save(&re)
+    go utils.SendEmail(user.Email,&user, &re, qr_path)
+
 	return c.JSON(http.StatusCreated, re)
 }
 
