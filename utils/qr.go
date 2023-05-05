@@ -55,7 +55,7 @@ func GenerateQR(r *model.ReservationRequest) (string, error) {
 
 	db.Save(&qr_db)
 
-	return "http://localhost:1234/qr/" + qr_db.ID, nil
+	return qr_db.ID, nil
 }
 
 func marsharlQR(q Qr) ([]byte, error) {

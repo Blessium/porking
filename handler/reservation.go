@@ -17,9 +17,22 @@ func CreateReservation(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+
+
 	db, err := database.ConnectDatabase()
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+    var user model.User
+
+	result := db.Limit(1).First(&user, user_id)
+	if result.Error != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	if result.RowsAffected == 0 {
+		return c.String(http.StatusNotFound, "Utente non trovato")
 	}
 
 	if err := c.Bind(&r); err != nil {
@@ -34,8 +47,12 @@ func CreateReservation(c echo.Context) error {
 
     re := r.ConvertToReservation()
 	re.UserID = user_id
-    re.QRCodePath = qr_path
+    re.QRCodePath = "http://localhost:1234/qr/" + qr_path
 	db.Save(&re)
+
+    if err := utils.SendEmail(user.Email,&user, &re, qr_path); err != nil {
+        return c.String(http.StatusInternalServerError, err.Error());
+    }
 	return c.JSON(http.StatusCreated, re)
 }
 
