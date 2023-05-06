@@ -8,9 +8,14 @@ import (
 )
 
 func InitDi() {
+
     _, _ = di.RegisterBean("userService", reflect.TypeOf((*service.UserService)(nil))) 
     _, _ = di.RegisterBean("carService", reflect.TypeOf((*service.CarService)(nil))) 
+    _, _ = di.RegisterBean("reservationService", reflect.TypeOf((*service.ReservationService)(nil))) 
+
     _, _ = di.RegisterBean("userHandler", reflect.TypeOf((*handler.UserController)(nil))) 
     _, _ = di.RegisterBean("carHandler", reflect.TypeOf((*handler.CarController)(nil))) 
+    _, _ = di.RegisterBean("reservationHandler", reflect.TypeOf((*handler.ReservationController)(nil))) 
+
     _ = di.InitializeContainer()
 }

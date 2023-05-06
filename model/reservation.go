@@ -25,8 +25,8 @@ type ReservationRequest struct {
 	CarParkID uint     `json:"car_park_id"`
 }
 
-func (r *ReservationRequest) ConvertToReservation() Reservation {
-	var res Reservation
+func (r *ReservationRequest) ConvertToReservation() *Reservation {
+    res := new(Reservation)
 	res.StartTime = r.StartTime.Time
 	res.EndTime = r.EndTime.Time
 	res.Cost = r.Cost

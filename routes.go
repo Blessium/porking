@@ -4,14 +4,16 @@ import (
 	"github.com/blessium/porking/handler"
     "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
+    "github.com/goioc/di"
 )
 
 func registerRoutes(e *echo.Echo) {
 
     jwt_mid := echojwt.WithConfig(echojwt.Config{SigningKey: []byte("abracadabra"),})
 
-    userController := handler.UserController{}.GetInstance()
-    carController := handler.CarController{}.GetInstance()
+    userController := di.GetInstance("userHandler").(*handler.UserController)
+    carController := di.GetInstance("carHandler").(*handler.CarController) 
+    reservationController := di.GetInstance("reservationHandler").(*handler.ReservationController)
 
     user := e.Group("users")
 
@@ -38,8 +40,8 @@ func registerRoutes(e *echo.Echo) {
     cars.PUT("/:id", carController.UpdateCar)
 
     res := e.Group("reservations", jwt_mid)
-    res.GET("", handler.GetAllReservations)
-    res.POST("", handler.CreateReservation)
+    res.GET("", reservationController.GetAllReservations)
+    res.POST("", reservationController.CreateReservation)
 
     e.GET("qr/:uuid", handler.GetQRCode)
 }
