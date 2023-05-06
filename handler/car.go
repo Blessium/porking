@@ -1,22 +1,24 @@
 package handler
 
 import (
-	"github.com/blessium/porking/database"
 	"github.com/blessium/porking/model"
 	"github.com/blessium/porking/utils"
+	"github.com/blessium/porking/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
+    "github.com/goioc/di"
+    "strconv"
 )
 
-func AddCar(c echo.Context) error {
-	var car model.Car
+type CarController struct {
+    carService *service.CarService `di.inject:"carService"`
+}
+
+func (ca *CarController) AddCar(c echo.Context) error {
+
+    car := new(model.Car)
 
 	user_id, err := utils.Extract_id_from_token(c)
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-
-	db, err := database.ConnectDatabase()
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -27,56 +29,72 @@ func AddCar(c echo.Context) error {
 
 	car.UserID = user_id
 
-	db.Save(&car)
+    if err := ca.carService.AddCar(car); err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
 
 	return c.String(http.StatusCreated, "Added car")
 }
 
-func UpdateCar(c echo.Context) error {
-	var car model.Car
+func (ca *CarController) UpdateCar(c echo.Context) error {
 
-	id := c.Param("id")
+    car := new(model.Car)
+    
+    id := c.Param("id")
 
-	db, err := database.ConnectDatabase()
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
+	user_id, err := utils.Extract_id_from_token(c)
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
+
 
 	if err := c.Bind(&car); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+    
+    car_id, err := strconv.Atoi(id)
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
 
-	var old_car model.Car
-	result := db.Limit(1).Find(&old_car, id)
-	if result.Error != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-
-	if result.RowsAffected == 0 {
-		return c.String(http.StatusNotFound, "Macchina non trovata")
-	}
-
-	db.Model(&old_car).Updates(&car)
+    if err := ca.carService.UpdateCar(car, user_id, uint(car_id)); err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
+    
 
 	return c.String(http.StatusCreated, "Added car")
 }
 
-func GetCars(c echo.Context) error {
-	var cars []model.Car
-
+func (ca *CarController) GetCars(c echo.Context) error {
 	user_id, err := utils.Extract_id_from_token(c)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	db, err := database.ConnectDatabase()
+    cars, err := ca.carService.GetCarsById(user_id) 
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
+
+	return c.JSON(http.StatusFound, cars)
+}
+
+func (ca *CarController) GetCar(c echo.Context) error {
+    car_id := c.Param("id")
+    
+	user_id, err := utils.Extract_id_from_token(c)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if err := db.Model(&model.User{ID: user_id}).Association("Cars").Find(&cars); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
+    car_id_i, err := strconv.Atoi(car_id)
+    cars, err := ca.carService.GetCarById(user_id, uint(car_id_i)) 
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
+    return c.JSON(http.StatusFound, cars)
+}
 
-	return c.JSON(http.StatusFound, cars)
+func (u CarController) GetInstance() *CarController {
+    return di.GetInstance("carHandler").(*CarController)
 }
