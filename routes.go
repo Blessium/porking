@@ -7,8 +7,12 @@ import (
 )
 
 func registerRoutes(e *echo.Echo) {
+
     jwt_mid := echojwt.WithConfig(echojwt.Config{SigningKey: []byte("abracadabra"),})
+
     userController := handler.UserController{}.GetInstance()
+    carController := handler.CarController{}.GetInstance()
+
     user := e.Group("users")
 
 	user.POST("", userController.AddUser)
@@ -28,9 +32,10 @@ func registerRoutes(e *echo.Echo) {
 	parking_spot.POST("", handler.AddParkingSpot)
 
     cars := e.Group("cars", jwt_mid)
-    cars.GET("", handler.GetCars)
-    cars.POST("", handler.AddCar)
-    cars.PUT("/:id", handler.UpdateCar)
+    cars.GET("", carController.GetCars)
+    cars.GET("/:id", carController.GetCar)
+    cars.POST("", carController.AddCar)
+    cars.PUT("/:id", carController.UpdateCar)
 
     res := e.Group("reservations", jwt_mid)
     res.GET("", handler.GetAllReservations)
