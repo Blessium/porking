@@ -14,6 +14,7 @@ func registerRoutes(e *echo.Echo) {
 	userController := di.GetInstance("userHandler").(*handler.UserController)
 	carController := di.GetInstance("carHandler").(*handler.CarController)
 	reservationController := di.GetInstance("reservationHandler").(*handler.ReservationController)
+	parkingSpotController := di.GetInstance("parkingSpotHandler").(*handler.ParkingSpotController)
 	carParkController := di.GetInstance("carParkHandler").(*handler.CarParkController)
 
 	user := e.Group("users")
@@ -31,8 +32,8 @@ func registerRoutes(e *echo.Echo) {
 	car_park.PUT("/:id", carParkController.UpdatedCarPark)
 
 	parking_spot := car_park.Group("/:id/parking_spots")
-	parking_spot.GET("", handler.GetAllParkingSpots)
-	parking_spot.POST("", handler.AddParkingSpot)
+	parking_spot.GET("", parkingSpotController.GetAllParkingSpots)
+	parking_spot.POST("", parkingSpotController.AddParkingSpot)
 
 	cars := e.Group("cars", jwt_mid)
 	cars.GET("", carController.GetCars)

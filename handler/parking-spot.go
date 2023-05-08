@@ -1,67 +1,50 @@
 package handler
 
 import (
-	"github.com/blessium/porking/database"
 	"github.com/blessium/porking/model"
+	"github.com/blessium/porking/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
-func AddParkingSpot(c echo.Context) error {
-
-	id := c.Param("id")
-
-	db, err := database.ConnectDatabase()
-
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-
-	p := new(model.ParkingSpot)
-	car := new(model.CarPark)
-
-	result := db.Limit(1).First(&car, id)
-	if result.Error != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-
-	if result.RowsAffected == 0 {
-		return c.String(http.StatusNotFound, "Car park non trovato")
-	}
-
-	if err := c.Bind(p); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-
-	db.Model(car).Association("ParkingSpots").Append(p)
-
-	return c.JSON(http.StatusCreated, car)
+type ParkingSpotController struct {
+	parkingSpotService *service.ParkingSpotService `di.inject:"parkingSpotService"`
 }
-func GetAllParkingSpots(c echo.Context) error {
+
+func (p *ParkingSpotController) AddParkingSpot(c echo.Context) error {
 
 	id := c.Param("id")
 
-	var p []model.ParkingSpot
+	pa := new(model.ParkingSpot)
 
-	db, err := database.ConnectDatabase()
+	if err := c.Bind(pa); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
 
+	p_id, err := strconv.Atoi(id)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	car := new(model.CarPark)
-
-	result := db.Limit(1).First(&car, id)
-	if result.Error != nil {
+	if err := p.parkingSpotService.AddParkingSpot(uint(p_id), pa); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if result.RowsAffected == 0 {
-		return c.String(http.StatusNotFound, "Car park non trovato")
+	return c.String(http.StatusCreated, "created")
+}
+func (p *ParkingSpotController) GetAllParkingSpots(c echo.Context) error {
+
+	id := c.Param("id")
+	p_id, err := strconv.Atoi(id)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-    
-    db.Model(&car).Association("ParkingSpots").Find(&p)
+    ps, err := p.parkingSpotService.GetAllParkingSpots(uint(p_id))
+    if err != nil {
+        return c.String(http.StatusBadRequest, err.Error())
+    }
 
-	return c.JSON(http.StatusCreated, p)
+	return c.JSON(http.StatusCreated, ps)
 }
