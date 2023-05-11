@@ -3,18 +3,19 @@ package utils
 import (
 	"crypto/sha256"
 	b64 "encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/blessium/porking/database"
 	"github.com/blessium/porking/model"
 	"github.com/skip2/go-qrcode"
-    "encoding/hex"
 )
 
-type Qr struct{
-    Model model.ReservationRequest `json:"reservation_info"`
-	Hash  string `json:"checksum"`
+type Qr struct {
+	Model model.ReservationRequest `json:"reservation_info"`
+	Hash  string                   `json:"hash"`
+	Firma string                   `json:"fingerprint"`
 }
 
 func GenerateQR(r *model.ReservationRequest) (string, error) {
@@ -28,15 +29,19 @@ func GenerateQR(r *model.ReservationRequest) (string, error) {
 	h.Write([]byte(json))
 	hash := h.Sum(nil)
 
-    var qr Qr
-    qr.Model = *r
-    qr.Hash = hex.EncodeToString(hash)
+	var qr Qr
+	qr.Model = *r
+	qr.Hash = hex.EncodeToString(hash)
+	signed_hash, err := SignMessage(hash)
+	if err != nil {
+		return "", err
+	}
+	qr.Firma = signed_hash
 
 	qr_json, err := marsharlQR(qr)
 	if err != nil {
 		return "", errors.New("Could not parse the json reservation request")
 	}
-
 
 	qr_image, err := qrcode.Encode(string(qr_json), qrcode.Medium, 256)
 	if err != nil {
