@@ -16,6 +16,7 @@ func registerRoutes(e *echo.Echo) {
 	reservationController := di.GetInstance("reservationHandler").(*handler.ReservationController)
 	parkingSpotController := di.GetInstance("parkingSpotHandler").(*handler.ParkingSpotController)
 	carParkController := di.GetInstance("carParkHandler").(*handler.CarParkController)
+    keysController := di.GetInstance("keyHandler").(*handler.KeysController)
 
 	user := e.Group("users")
 
@@ -46,4 +47,5 @@ func registerRoutes(e *echo.Echo) {
 	res.POST("", reservationController.CreateReservation)
 
 	e.GET("qr/:uuid", handler.GetQRCode)
+    e.GET("public_key", keysController.GetPublicKey)
 }

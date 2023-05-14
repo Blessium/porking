@@ -92,3 +92,24 @@ func loadPrivateKey() (*ecdsa.PrivateKey, error) {
 
     return privKey, nil
 }
+
+func GetPublicKey() (string, error){
+    keyData, err := ioutil.ReadFile("public.pem")
+    if err != nil {
+        return "", err
+    }
+
+    block, _ := pem.Decode(keyData)
+    if block == nil {
+        return "", errors.New("Could not decode pem file")
+    }
+
+    pubKey, err := x509.ParsePKIXPublicKey(block.Bytes)
+    if err != nil {
+        return "", err
+    }
+
+    ecdsapk := pubKey.(*ecdsa.PublicKey)
+
+    return base64.StdEncoding.EncodeToString(ecdsapk.X.Bytes()), nil
+}

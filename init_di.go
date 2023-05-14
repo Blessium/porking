@@ -15,6 +15,7 @@ func InitDi() {
 	_, _ = di.RegisterBean("carParkService", reflect.TypeOf((*service.CarParkService)(nil)))
 	_, _ = di.RegisterBean("parkingSpotService", reflect.TypeOf((*service.ParkingSpotService)(nil)))
 
+	_, _ = di.RegisterBean("keyHandler", reflect.TypeOf((*handler.KeysController)(nil)))
 	_, _ = di.RegisterBean("userHandler", reflect.TypeOf((*handler.UserController)(nil)))
 	_, _ = di.RegisterBean("carHandler", reflect.TypeOf((*handler.CarController)(nil)))
 	_, _ = di.RegisterBean("reservationHandler", reflect.TypeOf((*handler.ReservationController)(nil)))
