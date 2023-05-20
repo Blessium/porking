@@ -3,10 +3,12 @@ package service
 import (
 	"errors"
 	"github.com/blessium/porking/database"
+	"github.com/blessium/porking/kafka/producers"
 	"github.com/blessium/porking/model"
 )
 
 type UserService struct {
+	userProducer *producers.UserProducer `di.inject:"userProducer"`
 }
 
 func (u *UserService) GetUserById(id uint) (*model.User, error) {
@@ -74,6 +76,14 @@ func (u *UserService) RegisterUser(user *model.User) error {
 	}
 
 	db.Save(user)
+	event := producers.UserEvent{
+		EventType: "registration",
+		UserID:    user.ID,
+		Email:     user.Email,
+	}
+    if err := u.userProducer.Produce(event); err != nil {
+        return err
+    }
 	return nil
 }
 
@@ -84,16 +94,16 @@ func (u *UserService) AuthUser(login *model.UserLogin) (*model.User, error) {
 		return nil, err
 	}
 
-    user := new(model.User)
+	user := new(model.User)
 	result := db.Limit(1).Where(&model.User{Email: login.Email, Password: login.Password}).Find(&user)
 
 	if result.Error != nil {
-        return nil, result.Error
+		return nil, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-        return nil, errors.New("Invalid password or email")
+		return nil, errors.New("Invalid password or email")
 	}
 
-    return user, nil
+	return user, nil
 }

@@ -3,8 +3,11 @@ package main
 import (
 	"github.com/blessium/porking/handler"
 	"github.com/blessium/porking/service"
-	"github.com/goioc/di"
+    "github.com/blessium/porking/kafka/producers"
+    "github.com/goioc/di"
+    "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"reflect"
+    "context"
 )
 
 func InitDi() {
@@ -21,6 +24,15 @@ func InitDi() {
 	_, _ = di.RegisterBean("reservationHandler", reflect.TypeOf((*handler.ReservationController)(nil)))
 	_, _ = di.RegisterBean("carParkHandler", reflect.TypeOf((*handler.CarParkController)(nil)))
 	_, _ = di.RegisterBean("parkingSpotHandler", reflect.TypeOf((*handler.ParkingSpotController)(nil)))
+
+
+    _, _ = di.RegisterBeanFactory("kafkaConfiguration", di.Singleton, func(ctx context.Context) (interface{}, error) {
+        return &kafka.ConfigMap{
+        "bootstrap.servers": "porking-kafka:9092",
+        "client.id": "sussy",
+    }, nil 
+    })
+	_, _ = di.RegisterBean("userProducer", reflect.TypeOf((*producers.UserProducer)(nil)))
 
 	_ = di.InitializeContainer()
 }
