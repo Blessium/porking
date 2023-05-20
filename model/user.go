@@ -2,10 +2,11 @@ package model
 
 type User struct {
 	ID    uint   `gorm:"primaryKey"`
-    Name  string `json:"name" validate:"required"`
-	Email string `json:"email" validate:"required"`
-    Phone string `json:"phone" validate:"required"`
-    Password string `json:"password" validate:"required"`
+    Name  string `validate:"required"`
+	Email string `validate:"required"`
+    Phone string `validate:"required"`
+    Password string `validate:"required"`
+    Role string `validate:"required"`
     Cars []Car
     Reservations []Reservation
 }

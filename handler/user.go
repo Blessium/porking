@@ -5,7 +5,6 @@ import (
 	"github.com/blessium/porking/service"
 	"github.com/blessium/porking/utils"
 	"github.com/labstack/echo/v4"
-    "github.com/goioc/di"
 	"net/http"
 )
 
@@ -64,11 +63,11 @@ func (u *UserController) AddUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-    if err := u.userService.AddUser(user); err != nil {
+    if err := u.userService.RegisterUser(user); err != nil {
         return c.String(http.StatusBadRequest, err.Error())
     }
 
-	return c.JSON(http.StatusCreated, u)
+	return c.JSON(http.StatusOK, u)
 }
 
 func (u *UserController) AuthUser(c echo.Context) error {
@@ -94,8 +93,4 @@ func (u *UserController) AuthUser(c echo.Context) error {
 	}
 
 	return c.String(http.StatusCreated, token)
-}
-
-func (u UserController) GetInstance() *UserController {
-   return di.GetInstance("userHandler").(*UserController) 
 }

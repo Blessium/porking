@@ -66,7 +66,7 @@ func (u *UserService) UpdateUser(info *model.UserInfo, id uint) error {
 	return nil
 }
 
-func (u *UserService) AddUser(user *model.User) error {
+func (u *UserService) RegisterUser(user *model.User) error {
 	db, err := database.ConnectDatabase()
 
 	if err != nil {
