@@ -1,6 +1,8 @@
-FROM golang:alpine
+FROM golang:buster
 
 WORKDIR /usr/src/porking
+
+RUN apt-get update -y && apt-get install librdkafka-dev -y
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
