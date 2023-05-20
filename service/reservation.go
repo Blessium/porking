@@ -21,8 +21,16 @@ func (r *ReservationService) CreateReservation(res *model.ReservationRequest, us
     if err != nil {
         return nil, err
     }
+
+    parking_spot, err := new(ParkingSpotService).GetReservationParkingSpot(res.CarParkID)
+    if err != nil {
+        return nil, err
+    }
+
+    qr_res_model := res.ConvertToQRReservation()
+    qr_res_model.ParkingSpotID = parking_spot.ID
     
-    qr_path, err := utils.GenerateQR(res)
+    qr_path, err := utils.GenerateQR(qr_res_model)
     if err != nil {
         return nil, err
     }
@@ -30,6 +38,7 @@ func (r *ReservationService) CreateReservation(res *model.ReservationRequest, us
     re := res.ConvertToReservation()
 	re.UserID = user_id
     re.QRCodePath = "http://localhost:1234/qr/" + qr_path
+    re.ParkingSpotID = parking_spot.ID
 
 	db.Save(re)
     go utils.SendEmail(user.Email, user, re, qr_path)

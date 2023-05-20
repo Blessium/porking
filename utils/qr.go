@@ -13,12 +13,12 @@ import (
 )
 
 type Qr struct {
-	Model model.ReservationRequest `json:"reservation_info"`
-	Hash  string                   `json:"hash"`
-	Firma string                   `json:"fingerprint"`
+	Model model.ReservationQR `json:"reservation_info"`
+	Hash  string              `json:"hash"`
+	Firma string              `json:"fingerprint"`
 }
 
-func GenerateQR(r *model.ReservationRequest) (string, error) {
+func GenerateQR(r *model.ReservationQR) (string, error) {
 	json, err := json.Marshal(r)
 	if err != nil {
 		return "", errors.New("Could not parse the json reservation request")

@@ -6,15 +6,16 @@ import (
 )
 
 type Reservation struct {
-	ID         uint `gorm:"primaryKey"`
-	CreatedAt  time.Time
-	StartTime  time.Time `gorm:"index:,composite:time"`
-	EndTime    time.Time `gorm:"index:,composite:time"`
-	Cost       float32
-	QRCodePath string
-	CarID      uint
-	CarParkID  uint
-	UserID     uint `gorm:"index:idx_user"`
+	ID            uint `gorm:"primaryKey"`
+	CreatedAt     time.Time
+	StartTime     time.Time `gorm:"index:,composite:time"`
+	EndTime       time.Time `gorm:"index:,composite:time"`
+	Cost          float32
+	QRCodePath    string
+	CarID         uint
+	CarParkID     uint
+	ParkingSpotID uint
+	UserID        uint `gorm:"index:idx_user"`
 }
 
 type ReservationRequest struct {
@@ -25,10 +26,29 @@ type ReservationRequest struct {
 	CarParkID uint     `json:"car_park_id"`
 }
 
+type ReservationQR struct {
+	StartTime     UnixTime `json:"start_time"`
+	EndTime       UnixTime `json:"end_time"`
+	Cost          float32  `json:"cost"`
+	CarID         uint     `json:"car_id"`
+	CarParkID     uint     `json:"car_park_id"`
+	ParkingSpotID uint     `json:"parking_spot_id"`
+}
+
 func (r *ReservationRequest) ConvertToReservation() *Reservation {
-    res := new(Reservation)
+	res := new(Reservation)
 	res.StartTime = r.StartTime.Time
 	res.EndTime = r.EndTime.Time
+	res.Cost = r.Cost
+	res.CarID = r.CarID
+	res.CarParkID = r.CarParkID
+	return res
+}
+
+func (r *ReservationRequest) ConvertToQRReservation() *ReservationQR {
+	res := new(ReservationQR)
+	res.StartTime = r.StartTime
+	res.EndTime = r.EndTime
 	res.Cost = r.Cost
 	res.CarID = r.CarID
 	res.CarParkID = r.CarParkID
