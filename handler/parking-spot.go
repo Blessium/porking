@@ -16,7 +16,7 @@ func (p *ParkingSpotController) AddParkingSpot(c echo.Context) error {
 
 	id := c.Param("id")
 
-	pa := new(model.ParkingSpot)
+	pa := new(model.ParkingSpotRequest)
 
 	if err := c.Bind(pa); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -27,7 +27,7 @@ func (p *ParkingSpotController) AddParkingSpot(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if err := p.parkingSpotService.AddParkingSpot(uint(p_id), pa); err != nil {
+	if err := p.parkingSpotService.AddParkingSpots(uint(p_id), pa); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
