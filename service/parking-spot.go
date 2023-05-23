@@ -42,7 +42,9 @@ func (p *ParkingSpotService) GetAllParkingSpots(id uint) (*[]model.ParkingSpot, 
 	}
 
 	pe := new([]model.ParkingSpot)
-	db.Model(&car).Association("ParkingSpots").Find(pe)
+    if err := db.Model(&car).Association("ParkingSpots").Find(pe); err != nil {
+        return nil, err
+    }
 
 	return pe, nil
 }

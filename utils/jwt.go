@@ -21,7 +21,7 @@ func GenerateJWT(u model.User) (string, error) {
 		return "", err
 	}
 
-	rawKey := []byte(`abracadabra`)
+	rawKey := []byte(`al`)
 	jwkKey, err := jwk.FromRaw(rawKey)
 	if err != nil {
 		return "", err

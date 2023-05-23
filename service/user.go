@@ -7,7 +7,6 @@ import (
 )
 
 type UserService struct {
-	userProducer *producers.UserProducer `di.inject:"userProducer"`
 }
 
 func (u *UserService) GetUserById(id uint) (*model.User, error) {
@@ -75,14 +74,6 @@ func (u *UserService) RegisterUser(user *model.User) error {
 	}
 
 	db.Save(user)
-	event := producers.UserEvent{
-		EventType: "registration",
-		UserID:    user.ID,
-		Email:     user.Email,
-	}
-    if err := u.userProducer.Produce(event); err != nil {
-        return err
-    }
 	return nil
 }
 

@@ -9,7 +9,7 @@ import (
 
 func registerRoutes(e *echo.Echo) {
 
-	jwt_mid := echojwt.WithConfig(echojwt.Config{SigningKey: []byte("abracadabra")})
+	jwt_mid := echojwt.WithConfig(echojwt.Config{SigningKey: []byte("al")})
 
 	userController := di.GetInstance("userHandler").(*handler.UserController)
 	carController := di.GetInstance("carHandler").(*handler.CarController)
