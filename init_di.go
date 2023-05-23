@@ -5,7 +5,6 @@ import (
 	"github.com/blessium/porking/service"
     "github.com/goioc/di"
 	"reflect"
-    "context"
 )
 
 func InitDi() {
@@ -15,6 +14,10 @@ func InitDi() {
 	_, _ = di.RegisterBean("reservationService", reflect.TypeOf((*service.ReservationService)(nil)))
 	_, _ = di.RegisterBean("carParkService", reflect.TypeOf((*service.CarParkService)(nil)))
 	_, _ = di.RegisterBean("parkingSpotService", reflect.TypeOf((*service.ParkingSpotService)(nil)))
+
+
+	_, _ = di.RegisterBean("emailService", reflect.TypeOf((*service.EmailService)(nil)))
+	_, _ = di.RegisterBean("qrService", reflect.TypeOf((*service.QRService)(nil)))
 
 	_, _ = di.RegisterBean("keyHandler", reflect.TypeOf((*handler.KeysController)(nil)))
 	_, _ = di.RegisterBean("userHandler", reflect.TypeOf((*handler.UserController)(nil)))
