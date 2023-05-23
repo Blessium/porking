@@ -26,14 +26,6 @@ type ReservationRequest struct {
 	CarParkID uint     `json:"car_park_id"`
 }
 
-type ReservationQR struct {
-	StartTime     UnixTime `json:"start_time"`
-	EndTime       UnixTime `json:"end_time"`
-	Cost          float32  `json:"cost"`
-	CarID         uint     `json:"car_id"`
-	CarParkID     uint     `json:"car_park_id"`
-	ParkingSpotID uint     `json:"parking_spot_id"`
-}
 
 func (r *ReservationRequest) ConvertToReservation() *Reservation {
 	res := new(Reservation)
@@ -45,8 +37,8 @@ func (r *ReservationRequest) ConvertToReservation() *Reservation {
 	return res
 }
 
-func (r *ReservationRequest) ConvertToQRReservation() *ReservationQR {
-	res := new(ReservationQR)
+func (r *ReservationRequest) ConvertToQRInfo() *QRInfo {
+	res := new(QRInfo)
 	res.StartTime = r.StartTime
 	res.EndTime = r.EndTime
 	res.Cost = r.Cost

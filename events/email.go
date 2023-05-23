@@ -7,7 +7,7 @@ import (
 )
 
 type EmailSubscriber struct {
-    emailService service.IEmailService `di.inject:"emailService"`
+    emailService service.EmailService `di.inject:"emailService"`
 }
 
 
