@@ -14,13 +14,3 @@ services:
     environment:
       POSTGRES_PASSWORD: blessium
       POSTGRES_USER: blessium
-
-  porking-kafka:
-    image: "docker.io/bitnami/kafka:3.4"
-    container_name: "porking-kafka"
-    environment:
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    ports:
-      - "9092:9092"
-
-

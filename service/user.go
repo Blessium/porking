@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"github.com/blessium/porking/database"
-	"github.com/blessium/porking/kafka/producers"
 	"github.com/blessium/porking/model"
 )
 
